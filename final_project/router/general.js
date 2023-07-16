@@ -4,16 +4,6 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
-function userExists(username) {
-    const filteredUser = users.filter((user) => {
-        return user.username === username
-    })
-
-    if(filteredUser.length > 0)
-        return true
-    else
-        return false
-}
 
 
 public_users.post("/register", (req,res) => {
@@ -24,7 +14,7 @@ public_users.post("/register", (req,res) => {
       return res.status(404).json({message: 'User credentials not provided'})
   }
 
-  if(userExists(username)) {
+  if(!isValid(username)) {
       return res.status(404).json({message: `User with user name ${username} already exists.`})
   }
 
