@@ -40,41 +40,114 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  return res.status(200).send(books)
+    console.log('before')
+    const getBooks = new Promise((resolve, reject) => {
+        if(books) {
+            resolve(books)   
+        } else {
+            reject('Errors fetching books')
+        }
+    })
+
+    getBooks
+        .then((books) => {
+            console.log(books)
+            return res.status(200).send(books)
+        })
+        .catch((error) => {
+            return res.status(404).send(error)
+        })
+        console.log('after promise')
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  const isbn = req.params.isbn
-  const filteredBook = books[isbn]
+    console.log('before promise')
+    const getBookByISBN = new Promise((resolve, reject) => {
+        const isbn = req.params.isbn
+        const filteredBook = books[isbn]
+        if(filteredBook) {
+            resolve(filteredBook)
+        } else {
+            reject(`Book with ISBN ${isbn} not found.`)
+        }
+    })
 
-  return res.status(200).send(filteredBook)
+    getBookByISBN
+        .then((filteredBook) => {
+            console.log(filteredBook)
+            return res.status(200).send(filteredBook)
+        })
+        .catch((error) => {
+            return res.status(404).send(error)
+        })
+        console.log('after promise')
+  
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  const author = req.params.author
-  
-  const bookKeys = Object.keys(books)
+    console.log('before promise')
+    const getBookByAuthor = new Promise((resolve, reject) => {
+        const author = req.params.author
+        const bookKeys = Object.keys(books)
 
-  const filteredIndex = bookKeys.filter((key) => {
-      return books[key].author === author
-  })
+        const filteredIndex = bookKeys.filter((key) => {
+            return books[key].author === author
+        })
 
-  return res.status(200).send(books[filteredIndex])
+        if(filteredIndex. length > 0) {
+            const filteredBook = books[filteredIndex]
+            resolve(filteredBook)
+        } else {
+            reject(`Book with author ${author} not found.`)
+        }
+            
+    })
+
+    getBookByAuthor
+        .then((filteredBook) => {
+            console.log(filteredBook)
+            return res.status(200).send(filteredBook)
+        })
+        .catch((error) => {
+            return res.status(404).send(error)
+        })
+        console.log('after promise')
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-    const title = req.params.title
-  
-    const bookKeys = Object.keys(books)
-  
-    const filteredIndex = bookKeys.filter((key) => {
-        return books[key].title === title
+
+    console.log('before promise')
+    const getBookByTitle = new Promise((resolve, reject) => {
+        const title = req.params.title
+        const bookKeys = Object.keys(books)
+
+        const filteredIndex = bookKeys.filter((key) => {
+            return books[key].title === title
+        })
+
+        if(filteredIndex.length > 0) {
+            const filteredBook = books[filteredIndex]
+            resolve(filteredBook)
+        } else {
+            reject(`Cannot find book with title ${title}`)
+        }
     })
-  
-    return res.status(200).send(books[filteredIndex])
+
+    getBookByTitle
+        .then((filteredBook) => {
+            console.log(filteredBook)
+            return res.status(200).send(filteredBook)
+        })
+        .catch((error) => {
+            return res.status(404).send(error)
+        })
+
+        console.log('after promise')
+
+    
 });
 
 //  Get book review
